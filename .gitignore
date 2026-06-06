@@ -1,24 +1,7 @@
-# Environment variables — never commit secrets
-.env
-.env.local
-.env.*.local
-
-# Dependencies
 node_modules/
-
-# Build output
 dist/
-build/
-
-# Vite
-*.local
-
-# Editor
+.env
 .DS_Store
-.vscode/
-.idea/
-
-# Firebase
-.firebase/
-firebase-debug.log
-firestore-debug.log
+.agents/
+.claude/
+skills-lock.json

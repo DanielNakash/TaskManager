@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Fox Works</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; height: 100%; background: #F1E5CF; }
+      #root { height: 100%; }
+      * { -webkit-font-smoothing: antialiased; }
+
+      .ft-press { transition: transform .12s ease; }
+      .ft-press:active { transform: scale(0.95); }
+
+      .ft-scroll::-webkit-scrollbar { width: 0; height: 0; }
+      .ft-scroll { scrollbar-width: none; }
+
+      .ft-rowdel { opacity: 0.55; transition: opacity .15s; }
+
+      @keyframes ftPopIn {
+        from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+        to   { opacity: 1; transform: none; }
+      }
+      .ft-pop-in { animation: ftPopIn .34s cubic-bezier(.2,.8,.2,1); }
+
+      @keyframes ftSpin { to { transform: rotate(360deg); } }
+      .ft-spin { animation: ftSpin .8s linear infinite; }
+
+      @keyframes ftSheet {
+        from { transform: translateY(100%); }
+        to   { transform: none; }
+      }
+      .ft-sheet { animation: ftSheet .3s cubic-bezier(.2,.8,.2,1); }
+
+      @keyframes ftFade {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+      .ft-fade { animation: ftFade .25s ease; }
+
+      @keyframes ftToast {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: none; }
+      }
+      .ft-toast { animation: ftToast .26s cubic-bezier(.2,.8,.2,1); }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
