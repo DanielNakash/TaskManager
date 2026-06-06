@@ -19,9 +19,9 @@ export default function TaskList({ user }) {
   const [draft, setDraft] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [editDraft, setEditDraft] = useState('');
-  const [undo, setUndo] = useState(null); // { task, docData }
+  const [undo, setUndo] = useState(null);
+  const [addError, setAddError] = useState(null);
   const undoTimer = useRef(null);
-  // freshIds: set of task IDs that just got created (for pop-in animation)
   const freshIds = useRef(new Set());
 
   // Subscribe to tasks in Firestore
@@ -49,12 +49,18 @@ export default function TaskList({ user }) {
     if (!v) return;
     setDraft('');
     setComposerOpen(false);
-    const ref = await addDoc(collection(db, 'users', user.uid, 'tasks'), {
-      title: v,
-      done: false,
-      createdAt: serverTimestamp(),
-    });
-    freshIds.current.add(ref.id);
+    setAddError(null);
+    try {
+      const ref = await addDoc(collection(db, 'users', user.uid, 'tasks'), {
+        title: v,
+        done: false,
+        createdAt: serverTimestamp(),
+      });
+      freshIds.current.add(ref.id);
+    } catch (err) {
+      console.error('Failed to add task:', err);
+      setAddError('Could not save task. Please try again.');
+    }
   };
 
   const toggleTask = (task) => {
@@ -158,6 +164,17 @@ export default function TaskList({ user }) {
           </>
         )}
       </div>
+
+      {addError && (
+        <div style={{
+          position: 'absolute', left: 18, right: 18, bottom: 100, zIndex: 40,
+          padding: '10px 16px', borderRadius: 10, background: '#fff0ed',
+          border: '1px solid ' + t.rust, color: t.rust, fontSize: 13.5,
+          fontFamily: t.body,
+        }}>
+          {addError}
+        </div>
+      )}
 
       {/* FAB */}
       <button
