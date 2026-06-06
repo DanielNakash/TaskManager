@@ -15,8 +15,9 @@ export default function SignIn() {
       await signInWithPopup(auth, googleProvider);
       // onAuthStateChanged in App.jsx handles the transition
     } catch (err) {
+      console.error('Firebase auth error:', err.code, err.message, err);
       if (err.code !== 'auth/popup-closed-by-user') {
-        setError('Sign-in failed. Please try again.');
+        setError(`Sign-in failed. [${err.code}]`);
       }
       setSigning(false);
     }
