@@ -25,8 +25,70 @@ export const XMark = ({ s = 16, c, w = 2.4 }) => (
   </svg>
 );
 
-export const Trash = ({ s = 17, c }) => (
+export const Trash = ({ s = 17, c, w = 1.7 }) => (
   <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
-    <path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-9 0l1 13a1 1 0 001 1h6a1 1 0 001-1l1-13" stroke={c} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-9 0l1 13a1 1 0 001 1h6a1 1 0 001-1l1-13" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// X is an alias of XMark, kept for parity with ported v1.1.0 components
+export const X = XMark;
+
+export const Back = ({ s = 24, c, w = 2 }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
+    <path d="M15 5l-7 7 7 7" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+export const Chevron = ({ s = 20, c, w = 2, dir = 'right' }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none" style={{ transform: dir === 'left' ? 'rotate(180deg)' : (dir === 'down' ? 'rotate(90deg)' : 'none') }}>
+    <path d="M9 5l7 7-7 7" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+export const Calendar = ({ s = 19, c, w = 1.7 }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
+    <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" stroke={c} strokeWidth={w}/>
+    <path d="M3.5 9.5h17M8 3v4M16 3v4" stroke={c} strokeWidth={w} strokeLinecap="round"/>
+  </svg>
+);
+
+export const Repeat = ({ s = 16, c, w = 1.9 }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
+    <path d="M4 9a5 5 0 015-5h7l-2.2-2.2M20 15a5 5 0 01-5 5H8l2.2 2.2" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M16 1.8L18.4 4 16 6.2M8 22.2L5.6 20 8 17.8" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+export const Flag = ({ s = 14, c, w = 1.8 }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
+    <path d="M6 21V4m0 1h11l-2.5 4L17 13H6" stroke={c} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+export const Alert = ({ s = 14, c, w = 1.9 }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
+    <circle cx="12" cy="12" r="9" stroke={c} strokeWidth={w}/>
+    <path d="M12 7.5v5M12 16h.01" stroke={c} strokeWidth={w} strokeLinecap="round"/>
+  </svg>
+);
+
+export const Desc = ({ s = 18, c, w = 1.8 }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
+    <path d="M4 6h16M4 11h16M4 16h10" stroke={c} strokeWidth={w} strokeLinecap="round"/>
+  </svg>
+);
+
+export const Dots = ({ s = 20, c }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
+    <circle cx="5" cy="12" r="1.7" fill={c}/><circle cx="12" cy="12" r="1.7" fill={c}/><circle cx="19" cy="12" r="1.7" fill={c}/>
+  </svg>
+);
+
+export const Eye = ({ s = 18, c, w = 1.8, off }) => (
+  <svg width={s} height={s} viewBox="0 0 24 24" fill="none">
+    <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z" stroke={c} strokeWidth={w}/>
+    <circle cx="12" cy="12" r="2.6" stroke={c} strokeWidth={w}/>
+    {off && <path d="M3 3l18 18" stroke={c} strokeWidth={w} strokeLinecap="round"/>}
   </svg>
 );

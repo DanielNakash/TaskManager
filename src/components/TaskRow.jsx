@@ -1,141 +1,62 @@
-import { useRef, useEffect } from 'react';
-import { Check, XMark, Trash } from './icons.jsx';
+// TaskRow.jsx — All Tasks View display row. Tapping opens the editor; shows the
+// recurrence summary and the Due Date indicators. Ported from list.jsx.
 import t from '../theme.js';
+import { hexA } from '../utils/dates.js';
+import { recurSummary } from '../utils/recurrence.js';
+import { Check, Repeat, Flag, Alert, Chevron } from './icons.jsx';
 
-function hexA(hex, a) {
-  const h = hex.replace('#', '');
-  const r = parseInt(h.substring(0, 2), 16);
-  const g = parseInt(h.substring(2, 4), 16);
-  const b = parseInt(h.substring(4, 6), 16);
-  return `rgba(${r},${g},${b},${a})`;
+// Which Due Date indicator (if any) a task should show today.
+export function dueIndicator(task, today) {
+  if (!task.due) return null;
+  if (task.toDo && task.due === task.toDo) return 'deadline';        // persistent: scheduled date is the deadline
+  if (task.due === today && task.toDo !== task.due) return 'today';  // due-today note
+  return null;
 }
 
-export default function TaskRow({
-  task, editing, editDraft, setEditDraft,
-  onToggle, onStartEdit, onCommit, onCancel, onDelete,
-}) {
-  const editRef = useRef(null);
-
-  useEffect(() => {
-    if (editing && editRef.current) {
-      editRef.current.focus();
-      editRef.current.select();
-    }
-  }, [editing]);
-
-  const checkbox = (
-    <button
-      onClick={onToggle}
-      className="ft-press"
-      style={{
-        position: 'relative', flexShrink: 0, cursor: 'pointer',
-        border: 'none', background: 'transparent', padding: 0,
-        width: 28, height: 28,
-      }}
-    >
-      <span style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        width: '100%', height: '100%',
-        borderRadius: 6,
-        border: '2px solid ' + (task.done ? t.rust : hexA(t.ink, 0.28)),
-        background: task.done ? t.rust : 'transparent',
-        transition: 'background .18s, border-color .18s',
-      }}>
-        {task.done && <Check s={16} />}
-      </span>
-    </button>
-  );
-
-  const titleEl = editing ? (
-    <input
-      ref={editRef}
-      value={editDraft}
-      onChange={e => setEditDraft(e.target.value)}
-      onBlur={onCommit}
-      onKeyDown={e => {
-        if (e.key === 'Enter') onCommit();
-        if (e.key === 'Escape') { e.preventDefault(); onCancel(); }
-      }}
-      style={{
-        flex: 1, minWidth: 0, border: 'none',
-        borderBottom: '2px solid ' + t.rust,
-        background: 'transparent', fontSize: 16.5,
-        fontFamily: t.body, color: t.ink,
-        padding: '2px 0', outline: 'none',
-      }}
-    />
-  ) : (
-    <span
-      onClick={onStartEdit}
-      style={{
-        flex: 1, minWidth: 0, fontSize: 16.5, lineHeight: 1.35,
-        cursor: 'text', color: task.done ? t.muted : t.ink,
-        textDecoration: task.done ? 'line-through' : 'none',
-        textDecorationColor: hexA(t.rust, 0.6),
-        transition: 'color .2s',
-      }}
-    >{task.title}</span>
-  );
-
-  const editActions = (
-    <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
-      <button
-        onPointerDown={e => e.preventDefault()}
-        onClick={onCancel}
-        className="ft-press"
-        title="Cancel"
-        style={{
-          width: 33, height: 33, borderRadius: 9,
-          border: '1px solid ' + t.line, background: 'transparent',
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}
-      ><XMark s={15} c={t.muted} /></button>
-      <button
-        onPointerDown={e => e.preventDefault()}
-        onClick={onCommit}
-        className="ft-press"
-        title="Save"
-        style={{
-          width: 33, height: 33, borderRadius: 9,
-          border: 'none', background: t.rust, cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}
-      ><Check s={16} c="#fff" w={3} /></button>
-    </div>
-  );
-
+export default function TaskRow({ task, today, onOpen, onToggle }) {
+  const ind = dueIndicator(task, today);
   return (
-    <div
-      className={task.fresh ? 'ft-pop-in' : ''}
-      style={{
-        display: 'flex', alignItems: 'center', gap: 14,
-        padding: '16px 4px', borderBottom: '1px solid ' + t.line,
-        position: 'relative', opacity: task.done ? 0.62 : 1,
-      }}
-    >
-      {checkbox}
-      {titleEl}
-      {editing ? editActions : (
-        <>
-          {task.done && (
-            <span style={{
-              fontFamily: t.mono, fontSize: 9, fontWeight: 700, letterSpacing: 1,
-              color: t.rust, border: '1.5px solid ' + t.rust, borderRadius: 3,
-              padding: '2px 5px', transform: 'rotate(-7deg)', flexShrink: 0,
-            }}>DONE</span>
-          )}
-          <button
-            onClick={onDelete}
-            className="ft-rowdel ft-press"
-            title="Delete"
-            style={{
-              flexShrink: 0, width: 30, height: 30, borderRadius: 9,
-              border: 'none', background: 'transparent', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}
-          ><Trash s={17} c={hexA(t.ink, 0.32)} /></button>
-        </>
-      )}
+    <div className="ft-press" onClick={onOpen} style={{
+      display: 'flex', alignItems: 'center', gap: 13, padding: '15px 4px',
+      borderBottom: '1px solid ' + t.line, cursor: 'pointer', opacity: task.done ? 0.6 : 1,
+    }}>
+      <button onClick={(e) => { e.stopPropagation(); onToggle(); }} className="ft-press" title="Toggle done" style={{
+        flexShrink: 0, width: 26, height: 26, padding: 0, cursor: 'pointer',
+        border: '2px solid ' + (task.done ? t.rust : hexA(t.ink, 0.3)),
+        borderRadius: 7, background: task.done ? t.rust : 'transparent',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>{task.done && <Check s={15} />}</button>
+
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{
+          fontSize: 16.5, lineHeight: 1.3, color: task.done ? t.muted : t.ink,
+          textDecoration: task.done ? 'line-through' : 'none', textDecorationColor: hexA(t.rust, 0.5),
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        }}>{task.title}</div>
+
+        {(task.recurrence || ind) && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 5, flexWrap: 'wrap' }}>
+            {task.recurrence && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11.5, color: t.muted, fontFamily: t.mono, whiteSpace: 'nowrap' }}>
+                <Repeat s={13} c={t.muted} /> {recurSummary(task.recurrence)}
+              </span>
+            )}
+            {ind === 'deadline' && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontFamily: t.mono, whiteSpace: 'nowrap',
+                color: t.due, border: '1px solid ' + hexA(t.due, 0.4), borderRadius: 4, padding: '1px 6px', letterSpacing: 0.3 }}>
+                <Flag s={11} c={t.due} /> DEADLINE
+              </span>
+            )}
+            {ind === 'today' && (
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontFamily: t.mono, whiteSpace: 'nowrap',
+                color: '#fff', background: t.due, borderRadius: 4, padding: '2px 6px', letterSpacing: 0.3 }}>
+                <Alert s={11} c="#fff" /> DUE TODAY
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+      <Chevron s={18} c={hexA(t.ink, 0.28)} />
     </div>
   );
 }

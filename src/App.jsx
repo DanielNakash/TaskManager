@@ -3,7 +3,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase.js';
 import t from './theme.js';
 import SignIn from './components/SignIn.jsx';
-import TaskList from './components/TaskList.jsx';
+import TaskApp from './components/TaskApp.jsx';
 
 export default function App() {
   const [authState, setAuthState] = useState('loading'); // 'loading' | 'signin' | 'app'
@@ -44,5 +44,5 @@ export default function App() {
     return <SignIn />;
   }
 
-  return <TaskList user={user} />;
+  return <TaskApp user={user} />;
 }
